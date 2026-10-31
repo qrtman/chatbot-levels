@@ -1,2 +1,17 @@
+# Environment variables
 .env
-.pyc
+.env.*
+
+# Keep example environment files
+!.env.example
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+
+# Testing
+.pytest_cache/
