@@ -116,9 +116,15 @@ def main():
             print("Bot: Goodbye!")
             break
 
+        intent, confidence = bot.predict_intent(user_input)
+
+        print(f"Predicted Intent: {intent}")
+        print(f"Confidence: {confidence:.2f}")
+
         response = bot.chatbot(user_input)
 
         print("Bot:", response)
+
 
 
 if __name__ == "__main__":
