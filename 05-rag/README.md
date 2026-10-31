@@ -814,7 +814,33 @@ The workflow is located at:
 .github/workflows/tests.yml
 ```
 
-The Level 5 test suite will be added to the existing workflow.
+The GitHub Actions workflow runs automated tests for all five chatbot levels.
+
+The workflow uses Python 3.10 on Ubuntu and installs dependencies from the root `requirements.txt`.
+
+The Level 5 test suite includes unit, regression, and offline integration tests covering:
+
+- Document ingestion and section-based chunking
+- Gemini embedding interfaces
+- ChromaDB indexing
+- Semantic retrieval
+- Grounded response generation
+- Conversation memory and clarification handling
+- Complete RAG pipeline integration
+
+Gemini API interactions are mocked during automated testing.
+
+The workflow does not require API credentials or execute the live RAG evaluation runner.
+
+The workflow runs automatically for pull requests targeting `main`. It also supports manual execution.
+
+Any failing test causes the CI job to fail.
+
+The Level 5 test command is:
+
+```bash
+python -m unittest discover -s 05-rag/tests -v
+```
 
 ### CI Requirements
 
@@ -844,7 +870,7 @@ The pull request should not be merged until the automated checks pass.
 | 8 | Implement Gemini response generation | Complete |
 | 9 | Add conversation handling | Complete |
 | 10 | Add unit tests | Complete |
-| 11 | Run RAG evaluation | Planned |
+| 11 | Run RAG evaluation | Complete |
 | 12 | Update GitHub Actions | Planned |
 | 13 | Open pull request | Planned |
 | 14 | Review and squash merge | Planned |
