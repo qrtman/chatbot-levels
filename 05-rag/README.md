@@ -807,8 +807,8 @@ The pull request should not be merged until the automated checks pass.
 | 3 | Create knowledge-base documents | Complete |
 | 4 | Implement document ingestion | Complete |
 | 5 | Implement embeddings | Complete |
-| 6 | Integrate ChromaDB | Planned |
-| 7 | Implement semantic retrieval | Planned |
+| 6 | Integrate ChromaDB | Complete |
+| 7 | Implement semantic retrieval | Complete |
 | 8 | Implement Gemini response generation | Planned |
 | 9 | Add conversation handling | Planned |
 | 10 | Add unit tests | Planned |
