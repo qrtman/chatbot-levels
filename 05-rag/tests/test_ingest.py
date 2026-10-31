@@ -7,7 +7,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from ingest import chunk_text, load_documents, prepare_chunks
+from ingest import (
+    chunk_sections,
+    chunk_text,
+    load_documents,
+    prepare_chunks,
+)
 
 
 class IngestTests(unittest.TestCase):
@@ -59,6 +64,32 @@ class IngestTests(unittest.TestCase):
         )
 
         self.assertEqual(chunks, ["abcdef", "efghij"])
+
+    def test_sections_start_at_level_two_headings(self):
+        chunks = chunk_sections(
+            "# Title\n\nIntro\n\n## First\n\nOne\n\n### Sub\n\nTwo\n\n## Second\n\nThree"
+        )
+
+        self.assertEqual(
+            chunks,
+            [
+                "# Title\n\nIntro",
+                "## First\n\nOne\n\n### Sub\n\nTwo",
+                "## Second\n\nThree",
+            ],
+        )
+
+    def test_only_long_sections_are_split(self):
+        chunks = chunk_sections(
+            "## A\nab\n## B\nabcdefghij",
+            chunk_size=8,
+            overlap=2,
+        )
+
+        self.assertEqual(
+            chunks,
+            ["## A\nab", "## B\nabc", "bcdefghi", "hij"],
+        )
 
     def test_invalid_chunk_settings_raise(self):
         with self.assertRaises(ValueError):

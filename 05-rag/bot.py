@@ -10,7 +10,7 @@ from retriever import retrieve
 
 
 GENERATION_MODEL = "gemini-3.5-flash-lite"
-TOP_K = 3
+TOP_K = 4
 MAX_HISTORY_TURNS = 3
 
 CLARIFICATION_ANSWER = (

@@ -15,3 +15,9 @@ venv/
 
 # Testing
 .pytest_cache/
+
+# Local RAG vector database
+05-rag/chroma_db/
+
+# Generated RAG evaluation results
+05-rag/evaluation/results/

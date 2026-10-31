@@ -89,7 +89,7 @@ class BotTests(unittest.TestCase):
             "How long is shipping?",
             self.collection,
             self.embedder,
-            top_k=3,
+            top_k=4,
         )
 
     def test_prompt_includes_question_and_labeled_evidence(self):

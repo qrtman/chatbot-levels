@@ -2,11 +2,13 @@
 
 from hashlib import sha256
 from pathlib import Path
+import re
 import chromadb
 from embeddings import EMBEDDING_MODEL, GeminiEmbedder
 
 CHUNK_SIZE = 800
 CHUNK_OVERLAP = 120
+SECTION_PATTERN = re.compile(r"^(?=## )", re.MULTILINE)
 KNOWLEDGE_BASE = Path(__file__).resolve().parent / "knowledge_base"
 
 CHROMA_PATH = Path(__file__).resolve().parent / "chroma_db"
@@ -79,6 +81,21 @@ def chunk_text(
     return chunks
 
 
+def chunk_sections(
+    text: str,
+    chunk_size: int = CHUNK_SIZE,
+    overlap: int = CHUNK_OVERLAP,
+) -> list[str]:
+    """Chunk Markdown per level-two section, splitting only long sections."""
+
+    chunks = []
+
+    for section in SECTION_PATTERN.split(text):
+        chunks.extend(chunk_text(section, chunk_size, overlap))
+
+    return chunks
+
+
 def prepare_chunks(
     directory: Path,
     chunk_size: int = CHUNK_SIZE,
@@ -95,7 +112,7 @@ def prepare_chunks(
         document_hash = sha256(text.encode("utf-8")).hexdigest()
 
         for index, chunk in enumerate(
-            chunk_text(text, chunk_size, overlap)
+            chunk_sections(text, chunk_size, overlap)
         ):
             id_input = f"{source}:{index}:{document_hash}"
 

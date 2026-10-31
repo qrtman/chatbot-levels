@@ -8,6 +8,7 @@ from ingest import open_collection
 
 
 DEFAULT_TOP_K = 3
+CANDIDATE_MULTIPLIER = 4
 
 
 def retrieve(
@@ -35,12 +36,16 @@ def retrieve(
     query_vector = embedder.embed_query(question.strip())
 
     # Search the existing ChromaDB collection.
-    results = collection.query(
-        query_embeddings=[query_vector],
-        n_results=min(top_k, document_count),
-        include=["documents", "metadatas", "distances"],
+    candidate_count = min(
+        document_count,
+        top_k * CANDIDATE_MULTIPLIER,
     )
 
+    results = collection.query(
+        query_embeddings=[query_vector],
+        n_results=candidate_count,
+        include=["documents", "metadatas", "distances"],
+    )
     # ChromaDB returns nested lists, one per input query.
     fields = [
         results.get("ids"),
@@ -100,7 +105,39 @@ def retrieve(
             "metadata": metadata,
         })
 
-    return retrieved
+# Prefer coverage across documents rather than allowing one
+# source to occupy every available retrieval slot.
+
+    if len(retrieved) <= top_k:
+        return retrieved
+
+    max_per_source = max(1, top_k - 1)
+
+    selected = []
+    deferred = []
+    source_counts = {}
+
+    for chunk in retrieved:
+        if len(selected) == top_k:
+            break
+
+        source = chunk["source"]
+        count = source_counts.get(source, 0)
+
+        if count >= max_per_source:
+            deferred.append(chunk)
+            continue
+
+        selected.append(chunk)
+        source_counts[source] = count + 1
+
+    # If all candidates come from one source, retain the
+    # best remaining chunks rather than returning fewer results.
+    if len(selected) < top_k:
+        remaining = top_k - len(selected)
+        selected.extend(deferred[:remaining])
+
+    return selected
 
 
 def main():

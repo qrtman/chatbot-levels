@@ -312,9 +312,9 @@ Documents will be divided into smaller text sections.
 
 Chunking helps the retriever identify relevant passages without sending entire documents to the language model.
 
-The implementation will initially use deterministic text chunking.
+Documents are split at each `##` heading so every chunk covers one policy topic.
 
-The final chunk size and overlap will be selected through testing.
+Sections longer than 800 characters are split further with a 120-character overlap.
 
 ### Metadata
 
@@ -424,7 +424,7 @@ flowchart TD
     A["User Question"] --> B["Generate Query Embedding"]
     B --> C["Search ChromaDB"]
     C --> D["Rank Similar Chunks"]
-    D --> E["Select Top 3"]
+    D --> E["Select Top 4"]
     E --> F["Return Text + Metadata"]
 
     style A fill:#dbeafe,stroke:#2563eb,color:#1e40af
@@ -437,7 +437,7 @@ flowchart TD
 | Parameter | Planned value |
 |---|---|
 | Retrieval method | Vector similarity |
-| Number of results | Top 3 |
+| Number of results | Top 4 |
 | Source | Local Markdown documents |
 | Storage | Persistent ChromaDB collection |
 | Metadata | Filename and chunk identifier |
@@ -595,7 +595,7 @@ sequenceDiagram
     Embed-->>Bot: Query vector
 
     Bot->>DB: Search similar vectors
-    DB-->>Bot: Top 3 relevant chunks
+    DB-->>Bot: Top 4 relevant chunks
 
     Bot->>Bot: Build grounded prompt
 
@@ -709,6 +709,38 @@ Automated tests must not depend on:
 | Input validation | Empty and whitespace-only queries |
 | Error handling | API and database failures |
 | Conversation | Follow-up query handling |
+### Integration Testing
+
+The Level 5 implementation includes offline integration tests
+covering the complete RAG pipeline.
+
+The integration tests validate:
+
+- Markdown document loading and chunk preparation
+- ChromaDB indexing and metadata preservation
+- Semantic retrieval with deterministic test embeddings
+- Grounded answer generation with mocked Gemini responses
+- Source attribution
+- Context-aware follow-up retrieval
+- Conversation memory reset
+- Repeatable indexing
+- Document updates and deletions
+- Unsupported-question handling
+- API failure handling
+
+The tests use temporary Markdown documents and isolated
+ChromaDB collections.
+
+Gemini embedding and generation requests are mocked,
+so the automated test suite does not require API credentials
+or live network access.
+
+These tests validate application integration rather than
+the semantic quality of real Gemini-generated embeddings
+or answers.
+
+Retrieval and answer quality will be evaluated separately
+in Phase 11.
 
 ### Target
 
@@ -744,7 +776,7 @@ The evaluation set should include:
 
 | Metric | Target |
 |---|---|
-| Retrieval Recall@3 | ≥ 90% |
+| Retrieval Recall@4 | ≥ 90% |
 | Answer correctness | ≥ 90% |
 | Source attribution | 100% |
 | Unsupported-question handling | ≥ 90% |
@@ -752,9 +784,9 @@ The evaluation set should include:
 
 These are initial acceptance targets, not current results.
 
-### Retrieval Recall@3
+### Retrieval Recall@4
 
-Measures the proportion of answerable evaluation questions for which at least one required supporting document appears among the top three retrieved results.
+Measures the proportion of answerable evaluation questions for which every required supporting document appears among the top four retrieved results.
 
 ### Answer Correctness
 
@@ -810,8 +842,8 @@ The pull request should not be merged until the automated checks pass.
 | 6 | Integrate ChromaDB | Complete |
 | 7 | Implement semantic retrieval | Complete |
 | 8 | Implement Gemini response generation | Complete |
-| 9 | Add conversation handling | Planned |
-| 10 | Add unit tests | Planned |
+| 9 | Add conversation handling | Complete |
+| 10 | Add unit tests | Complete |
 | 11 | Run RAG evaluation | Planned |
 | 12 | Update GitHub Actions | Planned |
 | 13 | Open pull request | Planned |

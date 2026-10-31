@@ -18,6 +18,105 @@ from retriever import retrieve
 
 
 class RetrieverTests(unittest.TestCase):
+    def setUp(self):
+        self.collection = Mock()
+        self.embedder = Mock()
+
+        self.collection.count.return_value = 6
+
+        self.collection.query.return_value = {
+            "ids": [[
+                "returns-1",
+                "returns-3",
+                "returns-2",
+                "refunds-1",
+                "shipping-1",
+                "support-1",
+            ]],
+            "documents": [[
+                "Damaged item reporting procedure.",
+                "Return shipping and inspection.",
+                "Return authorization instructions.",
+                "Original shipping fees are refundable for approved damage.",
+                "Standard shipping information.",
+                "Customer support information.",
+            ]],
+            "metadatas": [[
+                {"source": "returns.md", "chunk_index": 1},
+                {"source": "returns.md", "chunk_index": 3},
+                {"source": "returns.md", "chunk_index": 2},
+                {"source": "refunds.md", "chunk_index": 1},
+                {"source": "shipping.md", "chunk_index": 1},
+                {"source": "support.md", "chunk_index": 1},
+            ]],
+            "distances": [[
+                0.2982,
+                0.3058,
+                0.3116,
+                0.3257,
+                0.3634,
+                0.3840,
+            ]],
+        }
+
+        results = retrieve(
+            "How do I report a damaged item and get shipping refunded?",
+            self.collection,
+            self.embedder,
+            top_k=3,
+        )
+
+        self.assertEqual(
+            [result["source"] for result in results],
+            ["returns.md", "returns.md", "refunds.md"],
+        )
+
+        self.assertEqual(
+            self.collection.query.call_args.kwargs["n_results"],
+            6,
+        )
+
+        self.assertEqual(len(results), 3)
+
+    def test_single_source_still_fills_top_three(self):
+        """Diversification must not discard useful same-source chunks."""
+
+        self.collection.count.return_value = 4
+
+        self.collection.query.return_value = {
+            "ids": [[
+                "returns-0",
+                "returns-1",
+                "returns-2",
+                "returns-3",
+            ]],
+            "documents": [[
+                "Return window.",
+                "Return eligibility.",
+                "Return instructions.",
+                "Return inspection.",
+            ]],
+            "metadatas": [[
+                {"source": "returns.md", "chunk_index": index}
+                for index in range(4)
+            ]],
+            "distances": [[0.1, 0.2, 0.3, 0.4]],
+        }
+
+        results = retrieve(
+            "Tell me about return requirements.",
+            self.collection,
+            self.embedder,
+            top_k=3,
+        )
+
+        self.assertEqual(
+            [result["id"] for result in results],
+            ["returns-0", "returns-1", "returns-2"],
+        )
+
+        self.assertEqual(len(results), 3)
+    
 
     def setUp(self):
         self.collection = Mock()
