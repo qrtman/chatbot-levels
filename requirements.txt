@@ -1,3 +1,4 @@
 scikit-learn>=1.5,<2.0
 google-genai
 python-dotenv
+chromadb>=1.0,<2.0
