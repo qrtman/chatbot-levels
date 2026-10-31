@@ -809,7 +809,7 @@ The pull request should not be merged until the automated checks pass.
 | 5 | Implement embeddings | Complete |
 | 6 | Integrate ChromaDB | Complete |
 | 7 | Implement semantic retrieval | Complete |
-| 8 | Implement Gemini response generation | Planned |
+| 8 | Implement Gemini response generation | Complete |
 | 9 | Add conversation handling | Planned |
 | 10 | Add unit tests | Planned |
 | 11 | Run RAG evaluation | Planned |
