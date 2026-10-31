@@ -1,0 +1,100 @@
+{
+    "intents": [
+        {
+            "tag": "greeting",
+            "patterns": [
+                "Hello",
+                "Hi",
+                "Hey",
+                "Good morning",
+                "Good afternoon",
+                "Good evening",
+                "How are you?",
+                "Hi there!",
+                "Hello there!",
+                "Hey, how's it going?"
+            ],
+            "response": "Hello! How can I help you today?"
+        },
+        {
+            "tag": "track_order",
+            "patterns": [
+                "Where is my order?",
+                "I want to track my package",
+                "Can you check my order status?",
+                "When will my purchase arrive?",
+                "I haven't received my package",
+                "Help me locate my order",
+                "What is the status of my delivery?",
+                "My order hasn't arrived yet",
+                "Can I track my shipment?",
+                "Tell me where my items are"
+            ],
+            "response": "You can track your order through your account."
+        },
+        {
+            "tag": "refund",
+            "patterns": [
+                "Can I get my money back?",
+                "I would like a refund",
+                "How do I request a refund?",
+                "When will I receive my money?",
+                "What is your refund policy?",
+                "I need my payment refunded",
+                "How long does a refund take?",
+                "Can you refund my purchase?",
+                "I want my money returned",
+                "Is my refund being processed?"
+            ],
+            "response": "Refunds are processed within 5–7 business days."
+        },
+        {
+            "tag": "shipping",
+            "patterns": [
+                "How long does shipping take?",
+                "What are your delivery options?",
+                "Do you ship internationally?",
+                "How much is shipping?",
+                "When do you dispatch orders?",
+                "What is the estimated delivery time?",
+                "Do you offer express shipping?",
+                "Tell me about your shipping policy",
+                "How quickly can you deliver?",
+                "Are there any delivery charges?"
+            ],
+            "response": "Standard shipping takes 3–5 business days."
+        },
+        {
+            "tag": "return_item",
+            "patterns": [
+                "I want to return a product",
+                "How do I send an item back?",
+                "What is your return policy?",
+                "Can I return something I purchased?",
+                "I received the wrong item",
+                "How many days do I have to return?",
+                "I need to exchange a product",
+                "Can I send this product back?",
+                "I want to return my purchase",
+                "What are the return conditions?"
+            ],
+            "response": "You can return products within 30 days."
+        },
+        {
+            "tag": "contact_support",
+            "patterns": [
+                "I need to speak to a human",
+                "Can I contact customer service?",
+                "How do I reach your support team?",
+                "I need help from an agent",
+                "Can I talk to a representative?",
+                "What is your customer service email?",
+                "I want to speak with support",
+                "Connect me to a real person",
+                "How can I contact your company?",
+                "I need assistance from customer support"
+            ],
+            "response": "Contact us at support@example.com."
+        }
+    ]
+}
